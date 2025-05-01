@@ -26,7 +26,7 @@ const VideoCardSkeleton = () => {
         height: 280, // Match video card height
         display: "flex",
         flexDirection: "column",
-        borderRadius: 2,
+        borderRadius: 1,
         overflow: "hidden",
         boxShadow: theme.shadows[1],
         backgroundColor: theme.palette.background.paper,
@@ -160,7 +160,7 @@ const VideoGrid = ({ videos = [], loading = false, onVideoSelect }) => {
                 height: 280, // Fixed height for all cards
                 display: "flex",
                 flexDirection: "column",
-                borderRadius: 2, // Use theme.shape.borderRadius for consistency? (Original used 2)
+                borderRadius: 1, // Use theme.shape.borderRadius for consistency? (Original used 2)
                 overflow: "hidden",
                 // boxShadow: theme.shadows[1], // Subtle shadow
                 backgroundColor: theme.palette.background.paper, // Use paper background
@@ -186,7 +186,7 @@ const VideoGrid = ({ videos = [], loading = false, onVideoSelect }) => {
                     outline: `2px solid ${theme.palette.primary.main}`,
                     outlineOffset: "1px",
                     boxShadow: theme.shadows[6], // Add shadow on focus too
-                    borderRadius: 2, // Match card border radius
+                    borderRadius: 1, // Match card border radius
                   },
                 }}
               >

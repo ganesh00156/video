@@ -109,7 +109,7 @@ const VideoPlayerPage = ({ video, allVideos, onBack, onVideoSelect }) => {
               aspectRatio: "16/9", // Maintain 16:9 aspect ratio
               mb: 2.5, // Margin below player
               bgcolor: "black", // Black background for the video area
-              borderRadius: theme.shape.borderRadius / 2, // Slightly less round corners
+              // borderRadius: theme.shape.borderRadius / 2, // Slightly less round corners
               overflow: "hidden", // Clip video content
               position: "relative", // For positioning elements like LIVE chip
             }}
@@ -215,7 +215,7 @@ const VideoPlayerPage = ({ video, allVideos, onBack, onVideoSelect }) => {
               <Button
                 variant="contained"
                 color="primary" // Or style differently (e.g., red)
-                sx={{ borderRadius: "20px", px: 3 }} // Pill shape button
+                sx={{ borderRadius: "10px", px: 3 }} // Pill shape button
                 // Add onClick handler for subscription logic later
               >
                 Subscribe
@@ -233,7 +233,7 @@ const VideoPlayerPage = ({ video, allVideos, onBack, onVideoSelect }) => {
               sx={{
                 bgcolor: alpha(theme.palette.action.hover, 0.5), // Use alpha for transparency
                 p: 2,
-                borderRadius: theme.shape.borderRadius / 2, // Match player radius
+                // borderRadius: theme.shape.borderRadius / 2, // Match player radius
                 mt: 1,
                 overflow: "hidden", // Clip content
               }}

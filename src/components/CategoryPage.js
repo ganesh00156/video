@@ -64,7 +64,7 @@ const CategoryPage = ({ categoryName, videos, onVideoSelect }) => {
                   disabled={!video?.id}
                   sx={{
                     display: "block",
-                    borderRadius: 2, // Less rounded corners
+                    borderRadius: 0, // Less rounded corners
                     overflow: "hidden",
                     transition:
                       "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
@@ -87,7 +87,7 @@ const CategoryPage = ({ categoryName, videos, onVideoSelect }) => {
                       flexDirection: "column",
                       bgcolor: theme.palette.background.paper,
                       boxShadow: "none",
-                      borderRadius: 2, // Match border radius
+                      borderRadius: 1, // Match border radius
                     }}
                   >
                     <CardMedia
