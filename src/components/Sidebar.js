@@ -1,6 +1,6 @@
 // src/components/Sidebar.js
 import React from "react";
-import { Link as RouterLink, useLocation } from "react-router-dom"; // Import RouterLink and useLocation
+import { Link as RouterLink } from "react-router-dom"; // Import RouterLink and useLocation
 import {
   Drawer,
   List,
@@ -14,7 +14,6 @@ import {
   ListSubheader,
   useTheme,
   alpha,
-  Link, // Import MUI Link for consistent styling if needed, but RouterLink is primary
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import PeopleIcon from "@mui/icons-material/People";

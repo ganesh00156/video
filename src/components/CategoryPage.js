@@ -11,7 +11,6 @@ import {
   Chip,
   useTheme,
   Container,
-  Link, // Keep MUI Link
 } from "@mui/material";
 import CategoryIcon from "@mui/icons-material/Category";
 // Assuming slugify is available if needed, but App.js provides category object now

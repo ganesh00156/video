@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom"; // Import hooks
 import RecommendedVideos from "./RecommendedVideos";
-import { slugify } from "../utils/slugify"; // Import slugify (optional here if App.js passes video object)
+
 import {
   Container,
   Typography,

@@ -10,7 +10,6 @@ import {
   Box,
   CardMedia,
   useTheme,
-  Link, // Keep MUI Link
 } from "@mui/material";
 
 /**
