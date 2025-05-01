@@ -1,4 +1,4 @@
-// src/Header.js
+// src/components/Header.js
 import React from "react";
 import {
   AppBar,
@@ -9,7 +9,7 @@ import {
   alpha, // Utility for color transparency
   IconButton, // For menu button
   useTheme, // Hook to access theme
-  useMediaQuery, // Hook for checking screen size
+  // useMediaQuery, // Removed unused import
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu"; // Menu icon for mobile sidebar toggle
 import SearchIcon from "@mui/icons-material/Search"; // Optional: Search icon
@@ -24,7 +24,7 @@ import SearchIcon from "@mui/icons-material/Search"; // Optional: Search icon
  */
 const Header = ({ onSearch, onMenuClick }) => {
   const theme = useTheme(); // Access the current theme
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Check if screen is small
+  // const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Removed unused variable
 
   return (
     <AppBar

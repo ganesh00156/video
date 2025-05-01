@@ -7,13 +7,14 @@ import {
   Box,
   Paper, // For video player background and details section
   Button, // For Back button and Expand/Collapse
-  IconButton, // For Back Icon Button
+  // IconButton, // Removed unused import
   Avatar, // For Author avatar
-  Divider, // To separate sections
+  // Divider, // Removed unused import
   CircularProgress, // Loading indicator
   Alert, // To show errors
   Chip,
-  useTheme,
+  useTheme, // Keep useTheme if needed elsewhere, remove if not
+  alpha, // Import alpha if needed for styling (e.g., placeholders)
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack"; // Back Icon
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"; // Placeholder avatar icon
@@ -32,7 +33,7 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess"; // Icon for collaps
  * @param {function} props.onVideoSelect - Callback function when a recommended video is clicked.
  */
 const VideoPlayerPage = ({ video, allVideos, onBack, onVideoSelect }) => {
-  const theme = useTheme();
+  const theme = useTheme(); // Keep theme if used for styling below
   const [isExpanded, setIsExpanded] = useState(false); // State for description expand/collapse
 
   // --- Loading State ---
@@ -44,7 +45,7 @@ const VideoPlayerPage = ({ video, allVideos, onBack, onVideoSelect }) => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          minHeight: "calc(100vh - 128px)",
+          minHeight: "calc(100vh - 128px)", // Adjust based on header/footer
         }}
       >
         <CircularProgress />
@@ -66,6 +67,7 @@ const VideoPlayerPage = ({ video, allVideos, onBack, onVideoSelect }) => {
     );
   }
 
+  // Toggle description expansion state
   const toggleDescription = () => {
     setIsExpanded(!isExpanded);
   };
@@ -75,15 +77,20 @@ const VideoPlayerPage = ({ video, allVideos, onBack, onVideoSelect }) => {
   // --- Render Video Player and Details ---
   return (
     <Container maxWidth="xl">
+      {" "}
+      {/* Use xl for wider layout */}
       <Box
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", lg: "row" },
-          gap: { xs: 3, md: 4 },
+          flexDirection: { xs: "column", lg: "row" }, // Column on mobile, row on large screens
+          gap: { xs: 3, md: 4 }, // Spacing between player/details and recommendations
         }}
       >
         {/* Left/Top Section: Video Player and Details */}
         <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+          {" "}
+          {/* Allow this section to grow */}
+          {/* Back Button */}
           <Button
             startIcon={<ArrowBackIcon />}
             onClick={onBack}
@@ -95,17 +102,16 @@ const VideoPlayerPage = ({ video, allVideos, onBack, onVideoSelect }) => {
           >
             Back
           </Button>
-
           {/* Video Player Area */}
           <Paper
-            elevation={0}
+            elevation={0} // No shadow for the player container itself
             sx={{
-              aspectRatio: "16/9",
-              mb: 2.5,
-              bgcolor: "black",
-              // borderRadius: theme.shape.borderRadius / 2, // Slightly less round corners for player
-              overflow: "hidden",
-              position: "relative",
+              aspectRatio: "16/9", // Maintain 16:9 aspect ratio
+              mb: 2.5, // Margin below player
+              bgcolor: "black", // Black background for the video area
+              borderRadius: theme.shape.borderRadius / 2, // Slightly less round corners
+              overflow: "hidden", // Clip video content
+              position: "relative", // For positioning elements like LIVE chip
             }}
           >
             {video.isLive ? (
@@ -118,7 +124,7 @@ const VideoPlayerPage = ({ video, allVideos, onBack, onVideoSelect }) => {
                   alignItems: "center",
                   justifyContent: "center",
                   flexDirection: "column",
-                  bgcolor: "black",
+                  bgcolor: "black", // Match parent background
                   position: "relative",
                 }}
               >
@@ -138,46 +144,51 @@ const VideoPlayerPage = ({ video, allVideos, onBack, onVideoSelect }) => {
             ) : (
               // HTML5 Video Player
               <video
-                controls
-                width="100%"
-                height="auto"
-                style={{ display: "block", aspectRatio: "16/9" }}
+                controls // Show default video controls
+                width="100%" // Make video fill container width
+                height="auto" // Adjust height automatically
+                style={{ display: "block", aspectRatio: "16/9" }} // Ensure block display and maintain aspect ratio
                 src={video.videoUrl}
-                poster={video.thumbnailUrl}
-                onError={(e) => console.error("Error loading video:", e)}
+                poster={video.thumbnailUrl} // Show thumbnail before loading
+                onError={(e) => console.error("Error loading video:", e)} // Basic error handling
               >
-                Your browser does not support the video tag.
+                Your browser does not support the video tag.{" "}
+                {/* Fallback message */}
               </video>
             )}
           </Paper>
-
           {/* Video Details Section */}
           <Box sx={{ px: { xs: 0, sm: 1 } }}>
+            {" "}
+            {/* Add slight horizontal padding on larger screens */}
+            {/* Video Title */}
             <Typography
-              variant="h5"
-              component="h1"
+              variant="h5" // Use h5 for video title
+              component="h1" // Semantically correct heading
               fontWeight="medium"
-              gutterBottom
+              gutterBottom // Adds margin below
               color="text.primary"
             >
               {video.title || "Untitled Video"}
             </Typography>
-
-            {/* Author Info & Actions */}
+            {/* Author Info & Actions (Subscribe Button) */}
             <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "space-between",
+                justifyContent: "space-between", // Space out author info and button
                 mb: 1,
-                flexWrap: "wrap",
-                gap: 2,
+                flexWrap: "wrap", // Allow wrapping on small screens
+                gap: 2, // Gap between items if they wrap
               }}
             >
+              {/* Author Avatar and Name */}
               <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                 <Avatar
-                  sx={{ width: 40, height: 40, bgcolor: "secondary.main" }}
+                  sx={{ width: 40, height: 40, bgcolor: "secondary.main" }} // Use theme color
+                  // Add src={video.authorAvatarUrl} if you have author avatars
                 >
+                  {/* Fallback to first letter or icon */}
                   {video.author ? (
                     video.author.charAt(0).toUpperCase()
                   ) : (
@@ -192,60 +203,62 @@ const VideoPlayerPage = ({ video, allVideos, onBack, onVideoSelect }) => {
                   >
                     {video.author || "Unknown Author"}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {video.subscriber || ""}
-                  </Typography>
+                  {/* Optional: Subscriber count */}
+                  {video.subscriber && (
+                    <Typography variant="body2" color="text.secondary">
+                      {video.subscriber}
+                    </Typography>
+                  )}
                 </Box>
               </Box>
+              {/* Subscribe Button */}
               <Button
                 variant="contained"
-                color="primary"
-                sx={{ borderRadius: "10px", px: 3 }}
+                color="primary" // Or style differently (e.g., red)
+                sx={{ borderRadius: "20px", px: 3 }} // Pill shape button
+                // Add onClick handler for subscription logic later
               >
                 Subscribe
               </Button>
             </Box>
-
             {/* Views and Upload Time */}
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               {video.views ? `${video.views} views` : "No views"}
-              {" • "}
+              {video.views && (video.uploadTime || video.duration) ? " • " : ""}
               {video.uploadTime || video.duration || ""}
             </Typography>
-
-            {/* Description Section - MODIFIED */}
+            {/* Description Section */}
             <Paper
-              elevation={0}
+              elevation={0} // No shadow for description box
               sx={{
-                bgcolor: "action.hover",
+                bgcolor: alpha(theme.palette.action.hover, 0.5), // Use alpha for transparency
                 p: 2,
-                // Reduced border radius using theme value from App.js
-                // borderRadius: theme.shape.borderRadius / 2,
+                borderRadius: theme.shape.borderRadius / 2, // Match player radius
                 mt: 1,
-                overflow: "hidden", // Keep overflow hidden
+                overflow: "hidden", // Clip content
               }}
             >
               <Typography
-                variant="body1"
+                variant="body1" // Use body1 for description text
                 color="text.primary"
                 sx={{
-                  whiteSpace: "pre-wrap",
+                  whiteSpace: "pre-wrap", // Preserve line breaks from description data
                   lineHeight: 1.6,
                   // Apply line clamp only when collapsed
                   display: "-webkit-box",
                   overflow: "hidden",
                   WebkitBoxOrient: "vertical",
                   WebkitLineClamp: isExpanded
-                    ? "unset"
-                    : descriptionLinesToShow,
+                    ? "unset" // Remove clamp when expanded
+                    : descriptionLinesToShow, // Apply clamp when collapsed
                 }}
               >
                 {video.description || "No description available."}
               </Typography>
-              {/* Add Show More/Less button if description likely exceeds limit */}
+              {/* Show More/Less button only if description is likely long enough */}
               {(video.description?.split("\n").length >
                 descriptionLinesToShow ||
-                video.description?.length > 150) && ( // Basic check if button is needed
+                video.description?.length > 150) && ( // Basic check
                 <Button
                   onClick={toggleDescription}
                   size="small"
@@ -254,9 +267,9 @@ const VideoPlayerPage = ({ video, allVideos, onBack, onVideoSelect }) => {
                   }
                   sx={{
                     mt: 1,
-                    textTransform: "none",
+                    textTransform: "none", // Prevent uppercase text
                     fontWeight: "bold",
-                    color: "text.primary",
+                    color: "text.primary", // Make button text stand out
                   }}
                 >
                   {isExpanded ? "Show less" : "Show more"}
@@ -268,12 +281,16 @@ const VideoPlayerPage = ({ video, allVideos, onBack, onVideoSelect }) => {
 
         {/* Right/Bottom Section: Recommended Videos */}
         <Box
-          sx={{ width: "100%", maxWidth: { lg: 360 }, flexShrink: { lg: 0 } }}
+          sx={{
+            width: { xs: "100%", lg: 360 }, // Full width on mobile, fixed width on large screens
+            maxWidth: { lg: 360 }, // Ensure it doesn't exceed 360px on large screens
+            flexShrink: { lg: 0 }, // Prevent shrinking on large screens
+          }}
         >
           <RecommendedVideos
             videos={allVideos}
             currentVideoId={video.id}
-            onVideoSelect={onVideoSelect}
+            onVideoSelect={onVideoSelect} // Pass the handler
           />
         </Box>
       </Box>

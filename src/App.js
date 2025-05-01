@@ -14,7 +14,7 @@ import {
   CssBaseline,
   ThemeProvider,
   createTheme,
-  Toolbar, // To offset content below AppBar
+  // Toolbar, // Removed unused import
   CircularProgress, // For loading state
   Typography, // For error messages
   alpha, // Import alpha utility
@@ -220,7 +220,7 @@ function App() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            minHeight: "calc(100vh - 128px)",
+            minHeight: "calc(100vh - 128px)", // Adjust height calculation based on header/footer
           }}
         >
           <CircularProgress />
@@ -234,7 +234,7 @@ function App() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            minHeight: "calc(100vh - 128px)",
+            minHeight: "calc(100vh - 128px)", // Adjust height calculation
             p: 3,
             textAlign: "center",
           }}
@@ -250,7 +250,6 @@ function App() {
 
     switch (currentPage) {
       case "video":
-        // ... (video page rendering logic)
         if (!currentVideo && selectedVideoId) {
           return (
             <Box
@@ -258,7 +257,7 @@ function App() {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                minHeight: "calc(100vh - 128px)",
+                minHeight: "calc(100vh - 128px)", // Adjust height calculation
                 p: 3,
               }}
             >
@@ -277,7 +276,6 @@ function App() {
           />
         );
       case "authors":
-        // ... (authors page rendering logic)
         return (
           <AuthorsPage
             videos={allVideos}
@@ -287,7 +285,6 @@ function App() {
           />
         );
       case "category":
-        // ... (category page rendering logic)
         return (
           <CategoryPage
             categoryName={selectedCategory}
@@ -295,26 +292,25 @@ function App() {
             onVideoSelect={(id) => handleNavigate("video", id)}
           />
         );
-      case "authorVideos": // *** THIS IS THE IMPORTANT PART FOR THE BACK BUTTON ***
+      case "authorVideos":
         return (
           <AuthorVideosPage
             authorName={selectedAuthor}
             videos={videosToDisplay}
             onVideoSelect={(id) => handleNavigate("video", id)}
-            // Make sure this line correctly calls handleNavigate to go to the 'authors' page
             onBack={() => {
-              console.log("AuthorVideosPage Back button clicked!"); // Add log here
+              console.log("AuthorVideosPage Back button clicked!");
               handleNavigate("authors");
             }}
           />
         );
       case "home":
       default:
-        // ... (home page rendering logic)
         return (
           <HomePage
-            videos={videosToDisplay}
+            videos={videosToDisplay} // Use videosToDisplay which includes search filtering
             onVideoSelect={(id) => handleNavigate("video", id)}
+            loading={isLoading} // Pass loading state
           />
         );
     }
@@ -338,25 +334,36 @@ function App() {
           component="main"
           sx={{
             display: "flex",
-            flexDirection: "column",
+            flexDirection: "column", // Stack content and footer
             flexGrow: 1,
             width: { xs: "100%", sm: `calc(100% - ${drawerWidth}px)` },
             bgcolor: "background.default",
-            overflow: "hidden",
-            pt: { xs: "56px", sm: "64px" },
+            // pt: { xs: "56px", sm: "64px" }, // Add padding top equal to AppBar height
+            overflow: "hidden", // Prevent double scrollbars initially
           }}
         >
+          {/* Toolbar adds space equivalent to AppBar height, pushing content down */}
+          {/* This Toolbar component IS used for spacing, so it should NOT be removed unless spacing is handled differently */}
+          {/* <Toolbar /> */}
+          {/* Correction: The Toolbar component IS needed if the AppBar is 'fixed' or 'absolute' */}
+          {/* Let's keep the Toolbar component for spacing below the fixed AppBar */}
+          {/* No, the padding-top (pt) on the Box above handles the spacing. Toolbar is indeed unused here. */}
+
+          {/* Content Area */}
           <Box
             sx={{
-              flexGrow: 1,
-              p: { xs: 1, sm: 2, md: 3 },
-              overflowY: "auto",
-              display: "flex",
-              flexDirection: "column",
+              flexGrow: 1, // Allow content to take up available space
+              p: { xs: 1, sm: 2, md: 3 }, // Padding around page content
+              overflowY: "auto", // Allow only content area to scroll
+              // Add padding top to account for fixed header
+              pt: { xs: "calc(56px + 8px)", sm: "calc(64px + 16px)" }, // Header height + desired padding
+              pb: 2, // Padding at the bottom before footer
             }}
           >
-            <Box sx={{ flexGrow: 1 }}>{renderPage()}</Box>
+            {renderPage()}
           </Box>
+
+          {/* Footer */}
           <Footer />
         </Box>
       </Box>

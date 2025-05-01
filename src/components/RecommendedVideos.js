@@ -4,7 +4,7 @@ import {
   List,
   ListItem,
   ListItemButton,
-  ListItemAvatar,
+  // ListItemAvatar, // Removed unused import
   ListItemText,
   Typography,
   Box,
@@ -18,16 +18,19 @@ import {
 const RecommendedVideos = ({ videos, currentVideoId, onVideoSelect }) => {
   const theme = useTheme();
 
+  // Filter out the current video and limit the number of recommendations
   const recommended = videos
-    .filter((video) => video && video.id !== currentVideoId)
-    .slice(0, 15);
+    .filter((video) => video && video.id !== currentVideoId) // Ensure video exists before checking id
+    .slice(0, 15); // Limit to 15 recommendations
 
+  // Return null if no recommended videos are available
   if (recommended.length === 0) return null;
 
+  // Placeholder image generator using theme colors
   const placeholderImage = (width, height) =>
     `https://placehold.co/${width}x${height}/${theme.palette.background.paper.substring(
-      1
-    )}/${theme.palette.text.secondary.substring(1)}?text=Video`;
+      1 // Remove '#' from hex
+    )}/${theme.palette.text.secondary.substring(1)}?text=Video`; // Remove '#' from hex
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -48,11 +51,12 @@ const RecommendedVideos = ({ videos, currentVideoId, onVideoSelect }) => {
               sx={{
                 p: 0,
                 display: "flex",
-                gap: 1.5,
-                borderRadius: 1,
-                alignItems: "flex-start",
+                gap: 1.5, // Space between thumbnail and text
+                borderRadius: 1, // Use theme shape? theme.shape.borderRadius / 2
+                alignItems: "flex-start", // Align items to the top
                 "&:hover": { backgroundColor: theme.palette.action.hover },
                 "&:focus-visible": {
+                  // Accessibility focus style
                   outline: `2px solid ${theme.palette.primary.main}`,
                   outlineOffset: "2px",
                 },
@@ -62,43 +66,47 @@ const RecommendedVideos = ({ videos, currentVideoId, onVideoSelect }) => {
               <CardMedia
                 component="img"
                 sx={{
-                  width: 168,
-                  height: 94,
-                  borderRadius: 1,
-                  backgroundColor: "action.disabledBackground",
+                  width: 168, // Standard YouTube recommendation thumbnail width
+                  height: 94, // Standard YouTube recommendation thumbnail height (16:9)
+                  borderRadius: 1, // Match button border radius
+                  backgroundColor: theme.palette.action.disabledBackground, // Placeholder bg
                   objectFit: "cover",
-                  flexShrink: 0,
+                  flexShrink: 0, // Prevent thumbnail from shrinking
                 }}
                 image={video.thumbnailUrl || placeholderImage(168, 94)}
                 alt={video.title || "Video thumbnail"}
+                // Fallback image if the provided one fails
                 onError={(e) => {
                   e.target.src = placeholderImage(168, 94);
                 }}
               />
 
-              {/* Text */}
+              {/* Text Content */}
               <ListItemText
-                disableTypography
-                sx={{ flexGrow: 1 }}
+                disableTypography // Allows using custom Typography components
+                sx={{ flexGrow: 1, m: 0 }} // Allow text to take remaining space, remove default margin
                 primary={
                   <Typography
-                    variant="subtitle2"
-                    fontWeight="bold"
+                    variant="subtitle2" // Slightly bolder/larger than body2
+                    fontWeight="medium" // Explicitly medium weight
                     color="text.primary"
                     sx={{
                       fontSize: "0.9rem",
                       lineHeight: 1.4,
                       overflow: "hidden",
                       display: "-webkit-box",
-                      WebkitLineClamp: 2,
+                      WebkitLineClamp: 2, // Limit title to 2 lines
                       WebkitBoxOrient: "vertical",
+                      mb: 0.25, // Small margin below title
                     }}
                   >
                     {video.title || "Untitled Video"}
                   </Typography>
                 }
                 secondary={
-                  <Box sx={{ mt: 0.5 }}>
+                  <Box>
+                    {" "}
+                    {/* Container for secondary text lines */}
                     <Typography
                       variant="body2"
                       color="text.secondary"
@@ -107,6 +115,7 @@ const RecommendedVideos = ({ videos, currentVideoId, onVideoSelect }) => {
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
+                        display: "block", // Ensure it takes its own line
                       }}
                     >
                       {video.author || "Unknown Author"}
@@ -119,11 +128,15 @@ const RecommendedVideos = ({ videos, currentVideoId, onVideoSelect }) => {
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
+                        display: "block", // Ensure it takes its own line
                       }}
                     >
+                      {/* Format views and upload time/duration */}
                       {video.views ? `${video.views} views` : "No views"}
-                      {video.views && video.uploadTime ? " • " : ""}
-                      {video.uploadTime || ""}
+                      {video.views && (video.uploadTime || video.duration)
+                        ? " • "
+                        : ""}
+                      {video.uploadTime || video.duration || ""}
                     </Typography>
                   </Box>
                 }
