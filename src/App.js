@@ -1,6 +1,6 @@
 // src/App.js
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import videoData from "./components/video.json"; // Ensure video.json is in the src directory
+import videoData from "./components/video.json";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Sidebar from "./components/Sidebar";
@@ -8,19 +8,19 @@ import HomePage from "./components/HomePage";
 import VideoPlayerPage from "./components/VideoPlayerPage";
 import AuthorsPage from "./components/AuthorsPage";
 import CategoryPage from "./components/CategoryPage";
-import AuthorVideosPage from "./components/AuthorVideosPage"; // Import the new AuthorVideosPage
+import AuthorVideosPage from "./components/AuthorVideosPage";
 import {
   Box,
   CssBaseline,
   ThemeProvider,
   createTheme,
-  // Toolbar, // Removed unused import
-  CircularProgress, // For loading state
-  Typography, // For error messages
-  alpha, // Import alpha utility
+  Toolbar, // Re-added Toolbar import
+  CircularProgress,
+  Typography,
+  alpha,
 } from "@mui/material";
 
-// --- Theme Definition --- (Assuming your theme definition is correct)
+// --- Theme Definition --- (Keep your existing theme)
 const primaryColor = "#3ea6ff";
 const darkTheme = createTheme({
   palette: {
@@ -94,7 +94,7 @@ const darkTheme = createTheme({
 const drawerWidth = 240;
 
 function App() {
-  // State Hooks (ensure these are present)
+  // State Hooks... (keep existing state)
   const [allVideos, setAllVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -106,7 +106,7 @@ function App() {
   const [selectedAuthor, setSelectedAuthor] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Effect Hook: Fetch video data (ensure this is present)
+  // Effect Hooks... (keep existing effects)
   useEffect(() => {
     setIsLoading(true);
     setError(null);
@@ -125,7 +125,6 @@ function App() {
     }
   }, []);
 
-  // Effect Hook: Filter videos based on search query (ensure this is present)
   useEffect(() => {
     const query = searchQuery.toLowerCase().trim();
     if (!query) {
@@ -141,7 +140,7 @@ function App() {
     }
   }, [searchQuery, allVideos]);
 
-  // --- Memoized Calculations (ensure these are present) ---
+  // Memoized Calculations... (keep existing memos)
   const uniqueCategories = useMemo(() => {
     if (!Array.isArray(allVideos)) return [];
     const categories = new Set(
@@ -166,25 +165,30 @@ function App() {
           video?.author?.trim().toLowerCase() === selectedAuthor.toLowerCase()
       );
     }
-    if (searchQuery.trim() !== "") {
+    // Apply search filter only if on a page where search makes sense (home, category, author videos)
+    if (
+      searchQuery.trim() !== "" &&
+      ["home", "category", "authorVideos"].includes(currentPage)
+    ) {
       const searchFilteredIds = new Set(searchFilteredVideos.map((v) => v.id));
       videos = videos.filter((v) => searchFilteredIds.has(v.id));
     }
-    if (
-      currentPage === "home" ||
-      currentPage === "category" ||
-      currentPage === "authorVideos"
-    ) {
+    // Return the filtered list only for relevant pages
+    if (["home", "category", "authorVideos"].includes(currentPage)) {
       return videos;
     }
-    return [];
+    // Return empty or potentially all videos for other pages if needed,
+    // but typically rendering logic handles this.
+    // For AuthorsPage, we pass allVideos directly.
+    // For VideoPlayerPage, we use currentVideo.
+    return videos; // Or adjust if needed for other page types
   }, [
     currentPage,
     selectedCategory,
     selectedAuthor,
     searchQuery,
     allVideos,
-    searchFilteredVideos,
+    searchFilteredVideos, // Include this dependency
   ]);
 
   const currentVideo = useMemo(() => {
@@ -192,16 +196,15 @@ function App() {
     return allVideos.find((v) => v?.id === selectedVideoId) || null;
   }, [selectedVideoId, allVideos]);
 
-  // --- Event Handlers (ensure these are present) ---
+  // Event Handlers... (keep existing handlers)
   const handleDrawerToggle = useCallback(() => {
     setMobileOpen((prev) => !prev);
   }, []);
 
-  // Ensure handleNavigate updates state correctly
   const handleNavigate = useCallback(
     (page, videoId = null, category = null, authorName = null) => {
-      console.log(`Navigating to: ${page}`); // Add console log for debugging
-      setCurrentPage(page); // This MUST update the state
+      console.log(`Navigating to: ${page}`);
+      setCurrentPage(page);
       setSelectedVideoId(page === "video" ? videoId : null);
       setSelectedCategory(page === "category" ? category : null);
       setSelectedAuthor(page === "authorVideos" ? authorName : null);
@@ -209,9 +212,9 @@ function App() {
       window.scrollTo(0, 0);
     },
     []
-  ); // Dependencies are correct
+  );
 
-  // --- Page Rendering Logic ---
+  // --- Page Rendering Logic --- (keep existing renderPage logic)
   const renderPage = () => {
     if (isLoading) {
       return (
@@ -220,7 +223,7 @@ function App() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            minHeight: "calc(100vh - 128px)", // Adjust height calculation based on header/footer
+            flexGrow: 1, // Make loading indicator take space
           }}
         >
           <CircularProgress />
@@ -234,7 +237,7 @@ function App() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            minHeight: "calc(100vh - 128px)", // Adjust height calculation
+            flexGrow: 1, // Make error message take space
             p: 3,
             textAlign: "center",
           }}
@@ -252,18 +255,8 @@ function App() {
       case "video":
         if (!currentVideo && selectedVideoId) {
           return (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                minHeight: "calc(100vh - 128px)", // Adjust height calculation
-                p: 3,
-              }}
-            >
-              <Typography color="error">
-                Video with ID '{selectedVideoId}' not found.
-              </Typography>
+            <Box sx={{ /* ... styling for not found */ flexGrow: 1 }}>
+              <Typography color="error">Video not found.</Typography>
             </Box>
           );
         }
@@ -278,7 +271,7 @@ function App() {
       case "authors":
         return (
           <AuthorsPage
-            videos={allVideos}
+            videos={allVideos} // Pass all videos to calculate authors
             onAuthorSelect={(authorName) =>
               handleNavigate("authorVideos", null, null, authorName)
             }
@@ -288,7 +281,7 @@ function App() {
         return (
           <CategoryPage
             categoryName={selectedCategory}
-            videos={videosToDisplay}
+            videos={videosToDisplay} // Pass filtered videos for this category
             onVideoSelect={(id) => handleNavigate("video", id)}
           />
         );
@@ -296,32 +289,32 @@ function App() {
         return (
           <AuthorVideosPage
             authorName={selectedAuthor}
-            videos={videosToDisplay}
+            videos={videosToDisplay} // Pass filtered videos for this author
             onVideoSelect={(id) => handleNavigate("video", id)}
-            onBack={() => {
-              console.log("AuthorVideosPage Back button clicked!");
-              handleNavigate("authors");
-            }}
+            onBack={() => handleNavigate("authors")}
           />
         );
       case "home":
       default:
         return (
           <HomePage
-            videos={videosToDisplay} // Use videosToDisplay which includes search filtering
+            videos={videosToDisplay} // Pass potentially search-filtered videos
             onVideoSelect={(id) => handleNavigate("video", id)}
-            loading={isLoading} // Pass loading state
+            loading={isLoading}
           />
         );
     }
   };
 
-  // --- Render --- (ensure the structure is correct)
+  // --- Render ---
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <Box sx={{ display: "flex", minHeight: "100vh" }}>
+        {/* Header remains fixed */}
         <Header onSearch={setSearchQuery} onMenuClick={handleDrawerToggle} />
+
+        {/* Sidebar remains */}
         <Sidebar
           mobileOpen={mobileOpen}
           handleDrawerToggle={handleDrawerToggle}
@@ -330,40 +323,35 @@ function App() {
           categories={uniqueCategories}
           selectedCategory={selectedCategory}
         />
+
+        {/* Main Content Area */}
         <Box
           component="main"
           sx={{
             display: "flex",
-            flexDirection: "column", // Stack content and footer
+            flexDirection: "column", // Stack Toolbar/Content/Footer
             flexGrow: 1,
             width: { xs: "100%", sm: `calc(100% - ${drawerWidth}px)` },
             bgcolor: "background.default",
-            // pt: { xs: "56px", sm: "64px" }, // Add padding top equal to AppBar height
-            overflow: "hidden", // Prevent double scrollbars initially
+            // Remove pt and overflow: hidden from here
           }}
         >
-          {/* Toolbar adds space equivalent to AppBar height, pushing content down */}
-          {/* This Toolbar component IS used for spacing, so it should NOT be removed unless spacing is handled differently */}
-          {/* <Toolbar /> */}
-          {/* Correction: The Toolbar component IS needed if the AppBar is 'fixed' or 'absolute' */}
-          {/* Let's keep the Toolbar component for spacing below the fixed AppBar */}
-          {/* No, the padding-top (pt) on the Box above handles the spacing. Toolbar is indeed unused here. */}
+          {/* ****** Add the Toolbar back here ****** */}
+          {/* This Toolbar acts as a spacer with the same height as the AppBar */}
+          <Toolbar />
 
-          {/* Content Area */}
+          {/* Scrollable Content Area */}
           <Box
             sx={{
-              flexGrow: 1, // Allow content to take up available space
+              flexGrow: 1, // Allow this Box to grow and fill space
               p: { xs: 1, sm: 2, md: 3 }, // Padding around page content
-              overflowY: "auto", // Allow only content area to scroll
-              // Add padding top to account for fixed header
-              pt: { xs: "calc(56px + 8px)", sm: "calc(64px + 16px)" }, // Header height + desired padding
-              pb: 2, // Padding at the bottom before footer
+              overflowY: "auto", // Make ONLY this Box scrollable
             }}
           >
-            {renderPage()}
+            {renderPage()} {/* Render the actual page content */}
           </Box>
 
-          {/* Footer */}
+          {/* Footer remains at the bottom */}
           <Footer />
         </Box>
       </Box>
